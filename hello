@@ -1,0 +1,36 @@
+upstream hello{
+    server 127.0.0.1:35000;
+}
+
+server {
+        listen 80 ;
+        #permet de gérer le routage vers le port 443 de manière automatique
+
+
+        server_name hello.yoursite.com;
+        location / {
+                return         301 https://$server_name$request_uri;
+                
+        }
+
+}
+
+server {
+        listen 443 ssl;
+
+        proxy_redirect off;
+        server_name hello.yoursite.com;
+        ssl_certificate /etc/letsencrypt/live/hello.yoursite.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/hello.yoursite.com/privkey.pem;
+
+
+        location / {
+                proxy_pass http://hello;
+                proxy_set_header Host $host;
+                # A noter, on peut ici ajouter de nombreuses choses lorsque c'est nécessaire (transmission ou non des headers etc. )
+        }
+
+	location /.well-known {
+                alias /var/www/html/hello.yoursite.com/.well-known;
+        }
+}
