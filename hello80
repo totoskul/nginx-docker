@@ -1,0 +1,12 @@
+server {
+        listen 80 ;
+
+
+        server_name hello.yourdomain.com;
+
+
+        location /.well-known {
+                alias /var/www/html/hello.yourdomain.com/.well-known;
+        }
+
+}
